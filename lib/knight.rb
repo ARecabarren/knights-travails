@@ -1,3 +1,7 @@
+# require 'thread'
+require 'set'
+
+
 class Knight
     attr_accessor :position, :edge_list, :adjancency_matrix
     def initialize(position, board)
@@ -11,11 +15,11 @@ class Knight
         y_distance = (@position[1] - new_position[1]).abs
       
         euclidean_distance = Math.sqrt(x_distance**2 + y_distance**2).round(2)
-      end
+    end
 
-    def compute_moves
+    def compute_moves(position = @position)
         list = []
-        current_x, current_y = @position
+        current_x, current_y = position
 
         possible_moves = [
             [-2, -1], [-2, 1],
@@ -23,7 +27,6 @@ class Knight
             [-1, -2], [1, -2],
             [-1, 2], [1, 2]
         ]
-        @adjancency_matrix[current_x][current_y] = 1
         possible_moves.each do |move|
             xstep, ystep = move
             new_x = current_x + xstep
@@ -31,11 +34,54 @@ class Knight
 
             if new_x.between?(0, 7) && new_y.between?(0, 7)
                 list << [new_x, new_y]
-                @adjancency_matrix[new_x][new_y] = 1
             end
         end
 
         list
+    end
+    
+    def reconstruct_path(parent, start, target)
+        path = [target]
+        current_node = target
+
+        while current_node != start
+        parent_node = parent[current_node]
+        path.unshift(parent_node)
+        current_node = parent_node
+        end
+
+        path
+    end
+
+    def shortest_path(start, target)
+        queue = Queue.new
+        visited = Set.new
+        parent = {}
+        queue.enq(start)
+        visited.add(start)
+
+        until queue.empty?
+            #Add coordinate to the queue and compute it's moves
+            current_node = queue.deq
+
+            if current_node == target
+                path = reconstruct_path(parent, start, target)
+                return path
+            end
+
+            moves = compute_moves(current_node)
+            
+            moves.each do |move|
+                unless visited.include?(move)
+                    queue.enq(move)
+                    visited.add(move)
+                    parent[move] = current_node
+                end
+            end
+            
+        end
+
+        return nil
     end
 
 end
