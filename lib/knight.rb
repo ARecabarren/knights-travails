@@ -6,8 +6,6 @@ class Knight
     attr_accessor :position, :edge_list, :adjancency_matrix
     def initialize(position, board)
         @position = position
-        @adjancency_matrix = Array.new(8){Array.new(8){0}}
-        @edge_list = compute_moves
     end
 
     def distance(new_position)
