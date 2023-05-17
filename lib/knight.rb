@@ -85,29 +85,3 @@ class Knight
     end
 
 end
-
-class Graph
-    def initialize(moves, currnt_pos)
-        
-    end
-end
-
-class Node
-    def initialize(value)
-        @value = value
-    end
-
-end
-
-
-class GameBoard
-    attr_accessor :matrix
-    def initialize(rows, columns)
-        @matrix = Array.new(rows){ Array.new(columns){0} }
-    end
-end
-
-translator = {}
-64.times do |time|
-
-end
